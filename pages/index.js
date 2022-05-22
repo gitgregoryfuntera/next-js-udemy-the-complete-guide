@@ -3,13 +3,18 @@ import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import fs from "fs/promises";
 import path from "path";
+import Link from "next/link";
 
 const Home = (props) => {
   const { products } = props;
   return (
     <ul>
       {products.map((product) => (
-        <li key={product.id}>{product.title}</li>
+        <li key={product.id}>
+          <Link href={`/${product.id}`}>
+            <a>{product.title}</a>
+          </Link>
+        </li>
       ))}
     </ul>
   );
