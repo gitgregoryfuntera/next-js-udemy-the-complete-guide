@@ -9,7 +9,7 @@ const ProductDetailsPage = (props) => {
   return (
     <>
       <h1>{productDetailInfo.title}</h1>
-      <p>{productDetailInfo.title}</p>
+      <p>{productDetailInfo.description}</p>
     </>
   );
 };
@@ -22,11 +22,21 @@ export const getStaticProps = async (context) => {
   const filePath = path.join(process.cwd(), "data", "dummy-data.json");
   const jsonData = await fs.readFile(filePath);
   const data = JSON.parse(jsonData);
-  const productDetailInfo = data.find((product) => product.id === params.id);
-
+  const productDetailInfo = data.products.find((product) => product.id === params.pid);
   return {
     props: {
       productDetailInfo,
     },
+  };
+};
+
+export const getStaticPaths = async () => {
+  return {
+    paths: [
+      { params: { pid: "p1" } },
+      { params: { pid: "p2" } },
+      { params: { pid: "p3" } },
+    ],
+    fallback: false,
   };
 };
