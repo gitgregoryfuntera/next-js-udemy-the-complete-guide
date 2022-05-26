@@ -6,6 +6,9 @@ import path from "path";
 
 const ProductDetailsPage = (props) => {
   const { productDetailInfo } = props;
+  if (!productDetailInfo) {
+    return <>Loading...</>
+  }
   return (
     <>
       <h1>{productDetailInfo.title}</h1>
@@ -34,9 +37,7 @@ export const getStaticPaths = async () => {
   return {
     paths: [
       { params: { pid: "p1" } },
-      { params: { pid: "p2" } },
-      { params: { pid: "p3" } },
     ],
-    fallback: false,
+    fallback: "blocking", // Can be set as false or blocking for dynamic path
   };
 };
