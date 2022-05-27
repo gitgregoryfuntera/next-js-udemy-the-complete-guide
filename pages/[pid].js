@@ -7,7 +7,7 @@ import path from "path";
 const ProductDetailsPage = (props) => {
   const { productDetailInfo } = props;
   if (!productDetailInfo) {
-    return <>Loading...</>
+    return <>Loading...</>;
   }
   return (
     <>
@@ -18,14 +18,20 @@ const ProductDetailsPage = (props) => {
 };
 
 export default ProductDetailsPage;
-
-export const getStaticProps = async (context) => {
-  const { params } = context;
-
+const getData = async () => {
   const filePath = path.join(process.cwd(), "data", "dummy-data.json");
   const jsonData = await fs.readFile(filePath);
   const data = JSON.parse(jsonData);
-  const productDetailInfo = data.products.find((product) => product.id === params.pid);
+  return data;
+};
+export const getStaticProps = async (context) => {
+  const { params } = context;
+
+  const data = await getData();
+
+  const productDetailInfo = data.products.find(
+    (product) => product.id === params.pid
+  );
   return {
     props: {
       productDetailInfo,
@@ -34,10 +40,14 @@ export const getStaticProps = async (context) => {
 };
 
 export const getStaticPaths = async () => {
+  const data = await getData();
+  const pathsWithParams = data.products.map(({ id }) => ({
+    params: {
+      pid: id,
+    },
+  }));
   return {
-    paths: [
-      { params: { pid: "p1" } },
-    ],
+    paths: pathsWithParams,
     fallback: "blocking", // Can be set as false or blocking for dynamic path
   };
 };
