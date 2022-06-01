@@ -11,7 +11,7 @@ const Home = (props) => {
     <ul>
       {products.map((product) => (
         <li key={product.id}>
-          <Link href={`/${product.id}`}>
+          <Link href={`/products/${product.id}`}>
             <a>{product.title}</a>
           </Link>
         </li>
