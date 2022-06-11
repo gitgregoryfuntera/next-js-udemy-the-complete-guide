@@ -1,16 +1,11 @@
 import React from "react";
-import { useRouter } from "next/router";
-import { getEventById } from "../../data/dummy-data";
 import EventSummary from "../../components/event-detail/event-summary";
 import EventLogistics from "../../components/event-detail/event-logistics";
 import EventContent from "../../components/event-detail/event-content";
 import ErrorAlert from "../../components/ui/error-alert";
-const SelectedEventPage = () => {
-  const router = useRouter();
-  const {
-    query: { eventId },
-  } = router;
-  const event = getEventById(eventId);
+import { getEventById, getEvents } from "../../utils/getEventsHelper";
+const SelectedEventPage = (props) => {
+  const { event } = props;
   if (!event) {
     return (
       <>
@@ -35,6 +30,31 @@ const SelectedEventPage = () => {
       </EventContent>
     </>
   );
+};
+
+export const getStaticProps = async (context) => {
+  const {
+    params: { eventId },
+  } = context;
+  const event = await getEventById(eventId);
+  return {
+    props: {
+      event,
+    },
+  };
+};
+
+export const getStaticPaths = async () => {
+  const events = await getEvents();
+  const pathsWithParams = events.map((event) => ({
+    params: {
+      eventId: event.id,
+    },
+  }));
+  return {
+    paths: pathsWithParams,
+    fallback: false,
+  };
 };
 
 export default SelectedEventPage;

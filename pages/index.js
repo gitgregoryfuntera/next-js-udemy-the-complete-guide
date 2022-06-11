@@ -3,20 +3,7 @@ import EventList from "../components/events/event-list";
 import EventsSearch from "../components/events/events-search";
 import { useRouter } from "next/router";
 import useSWR from "swr";
-
-const url =
-  "https://next-js-course-dee8e-default-rtdb.asia-southeast1.firebasedatabase.app/events.json";
-
-const transformObjToArr = (object) => {
-  const arr = [];
-  for (const key in object) {
-    arr.push({
-      id: key,
-      ...object[key],
-    });
-  }
-  return arr;
-};
+import { getEvents, url, transformObjToArr } from "../utils/getEventsHelper";
 
 const HomePage = (props) => {
   const { featuredEventsResponse } = props;
@@ -56,18 +43,13 @@ const HomePage = (props) => {
 export default HomePage;
 
 export const getServerSideProps = async () => {
-  const data = await fetch(url);
-  const response = await data.json();
-  console.log(
-    "🚀 ~ file: index.js ~ line 63 ~ getServerSideProps ~ response",
-    response
+  const response = await getEvents() || [];
+  const featuredEventsResponse = response.filter(
+    (event) => event.isFeatured === true
   );
-  const featuredEventsResponse = transformObjToArr(response);
   return {
     props: {
-      featuredEventsResponse: featuredEventsResponse.filter(
-        (event) => event.isFeatured === true
-      ),
+      featuredEventsResponse,
     },
   };
 };
