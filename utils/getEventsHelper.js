@@ -12,7 +12,10 @@ const getEvents = async () => {
 
 const getEventById = async (id) => {
   const events = await getEvents();
-  console.log("🚀 ~ file: getEventsHelper.js ~ line 15 ~ getEventById ~ events", events);
+  console.log(
+    "🚀 ~ file: getEventsHelper.js ~ line 15 ~ getEventById ~ events",
+    events
+  );
   return events.find((event) => event.id === id);
 };
 
@@ -32,4 +35,17 @@ const fetchEvents = async () => {
   return response.json();
 };
 
-export { url, getEvents, getEventById, transformObjToArr };
+const getFilteredEvents = async (dateFilter) => {
+  const { year, month } = dateFilter;
+  const events = await getEvents();
+  let filteredEvents = events.filter((event) => {
+    const eventDate = new Date(event.date);
+    return (
+      eventDate.getFullYear() === year && eventDate.getMonth() === month - 1
+    );
+  });
+
+  return filteredEvents;
+};
+
+export { url, getEvents, getEventById, transformObjToArr, getFilteredEvents};
