@@ -1,6 +1,5 @@
 import React from "react";
 import { useRouter } from "next/router";
-// import { getFilteredEvents } from "../../../data/dummy-data";
 import get from "lodash/get";
 import EventList from "../../../components/events/event-list";
 import ErrorAlert from "../../../components/ui/error-alert";
