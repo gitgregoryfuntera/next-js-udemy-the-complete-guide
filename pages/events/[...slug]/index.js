@@ -1,11 +1,11 @@
 import React from "react";
-import { useRouter } from "next/router";
 import get from "lodash/get";
 import EventList from "../../../components/events/event-list";
 import ErrorAlert from "../../../components/ui/error-alert";
 import Button from "../../../components/ui/button";
 import ResultsTitle from "../../../components/events/results-title";
 import { getFilteredEvents } from "../../../utils/getEventsHelper";
+import Head from "next/head";
 
 const EventSlugPage = (props) => {
   const {
@@ -14,9 +14,17 @@ const EventSlugPage = (props) => {
     date: { year, month },
   } = props;
 
+  let pageHeadData = (
+    <Head>
+      <title>All Events</title>
+      <meta name="description" content={`Events from ${month}/${year}`}></meta>
+    </Head>
+  );
+
   if (hasError) {
     return (
       <>
+        {pageHeadData}
         <ErrorAlert>
           <p>Invalid filter. Please adjust your values!</p>
         </ErrorAlert>
@@ -34,6 +42,7 @@ const EventSlugPage = (props) => {
   if (!length) {
     return (
       <>
+        {pageHeadData}
         <ErrorAlert>
           <p>No Events found for the choose filter</p>
         </ErrorAlert>
@@ -47,6 +56,7 @@ const EventSlugPage = (props) => {
   const date = new Date(year, month - 1);
   return (
     <>
+      {pageHeadData}
       <ResultsTitle date={date} />
       <EventList items={filteredEvents} />
     </>
