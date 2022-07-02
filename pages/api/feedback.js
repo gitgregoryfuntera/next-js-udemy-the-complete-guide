@@ -13,9 +13,8 @@ const handler = (req, res) => {
       feedback,
     };
 
-    const filePath = path.join(process.cwd(), "data", "feedback");
-    const fileData = fs.readFileSync(filePath);
-    const data = JSON.parse(fileData);
+    const filePath = getFilePath();
+    const data = getData(filePath);
     data.push(newFeedback);
     fs.writeFileSync(filePath, JSON.stringify(data));
 
@@ -24,10 +23,23 @@ const handler = (req, res) => {
       response: newFeedback,
     });
   } else {
+    const filePath = getFilePath();
+    const data = getData(filePath)
     res.status(200).json({
-      message: "hello world",
+      response: {
+        feedbacks: data,
+      }
     });
   }
+};
+
+const getFilePath = () => {
+  return path.join(process.cwd(), "data", "feedback.json");
+};
+
+const getData = (filePath) => {
+  const fileData = fs.readFileSync(filePath);
+  return JSON.parse(fileData);
 };
 
 export default handler;
