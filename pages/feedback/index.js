@@ -15,6 +15,8 @@ const Feedback = (props) => {
 export default Feedback;
 
 export const getStaticProps = () => {
+  // avoid using fetch function in getStatic props if calling own api
+  // instead use a helper function to extract the data
   const filePath = getFilePath();
   const data = getData(filePath);
   return {
