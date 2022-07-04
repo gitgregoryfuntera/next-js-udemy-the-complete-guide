@@ -33,11 +33,11 @@ const handler = (req, res) => {
   }
 };
 
-const getFilePath = () => {
+export const getFilePath = () => {
   return path.join(process.cwd(), "data", "feedback.json");
 };
 
-const getData = (filePath) => {
+export const getData = (filePath) => {
   const fileData = fs.readFileSync(filePath);
   return JSON.parse(fileData);
 };

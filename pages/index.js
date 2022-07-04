@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import Feedback from "./feedback";
 
 function HomePage() {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -67,9 +68,7 @@ function HomePage() {
       <hr />
       <button onClick={getFeedbacks}>load feedback</button>
       <ul>
-        {feedbacks.map(({ id, feedback }) => (
-          <li key={id}>{feedback}</li>
-        ))}
+        <Feedback feedbacks={feedbacks}/>
       </ul>
     </div>
   );
