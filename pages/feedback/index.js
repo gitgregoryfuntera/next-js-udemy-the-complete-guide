@@ -1,14 +1,30 @@
+import { useState } from "react";
 import { getData, getFilePath } from "../api/feedback";
 
 const Feedback = (props) => {
   const { feedbacks } = props;
+  const [feedbackItem, setFeedbackItem] = useState(null);
 
+  const showFeedback = async (id) => {
+    const data = await fetch(`/api/${id}`);
+    const { response } = await data.json();
+    console.log(
+      "🚀 ~ file: index.js ~ line 9 ~ showFeedback ~ response",
+      response
+    );
+    setFeedbackItem(response);
+  };
   return (
-    <ul>
-      {feedbacks.map(({ id, feedback }) => (
-        <li key={id}>{feedback}</li>
-      ))}
-    </ul>
+    <>
+      {feedbackItem && feedbackItem.email}
+      <ul>
+        {feedbacks.map(({ id, feedback }) => (
+          <li key={id} onClick={showFeedback.bind(null, id)}>
+            {feedback}
+          </li>
+        ))}
+      </ul>
+    </>
   );
 };
 
