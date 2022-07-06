@@ -6,7 +6,7 @@ const Feedback = (props) => {
   const [feedbackItem, setFeedbackItem] = useState(null);
 
   const showFeedback = async (id) => {
-    const data = await fetch(`/api/${id}`);
+    const data = await fetch(`/api/feedback/${id}`);
     const { response } = await data.json();
     console.log(
       "🚀 ~ file: index.js ~ line 9 ~ showFeedback ~ response",

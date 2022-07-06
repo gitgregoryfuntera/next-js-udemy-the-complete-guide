@@ -1,4 +1,4 @@
-import { getData, getFilePath } from "./feedback";
+import { getData, getFilePath } from ".";
 
 const handler = (req, res) => {
   const {
