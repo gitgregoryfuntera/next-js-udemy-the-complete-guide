@@ -1,8 +1,13 @@
-const handler = (req, res) => {
+import mongoDbClient from "../../../helpers/mongoDbClient";
+
+const handler = async (req, res) => {
   const {
     method,
     query: { eventId },
   } = req;
+
+  const client = await mongoDbClient("events");
+
   if (method === "POST") {
     const {
       body: { email, name, text },
@@ -11,12 +16,20 @@ const handler = (req, res) => {
     console.log("🚀 ~ file: index.js ~ line 6 ~ handler ~ name", name);
     console.log("🚀 ~ file: index.js ~ line 6 ~ handler ~ email", email);
 
-    res.status(201).json({
-      id: new Date().toISOString(),
-      message: "success",
+    const newComment = {
+      eventId,
       email,
       name,
       text,
+    };
+    const db = await client.db();
+
+    const result = await db.collection("comments").insertOne(newComment);
+
+    res.status(201).json({
+      message: 'success',
+      id: result.insertedId,
+      ...newComment
     });
   }
 
@@ -28,6 +41,7 @@ const handler = (req, res) => {
 
     res.status(200).json(dummyList);
   }
+  client.close();
 };
 
 export default handler;
