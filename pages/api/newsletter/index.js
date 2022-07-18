@@ -8,15 +8,33 @@ const handle = async (req, res) => {
     } = req;
     console.log("🚀 ~ file: index.js ~ line 9 ~ handle ~ email", email);
 
-    const client = await mongoDbClient("newsletter");
+    let client;
 
-    const db = await client.db();
+    try {
+      client = await mongoDbClient("newsletter");
+    } catch (e) {
+      console.log("🚀 ~ file: index.js ~ line 16 ~ handle ~ e", e);
+      res.status(500).json({
+        message: "Error: Failed connecting to Database",
+      });
+      return;
+    }
 
-    await db.collection("emails").insertOne({ email });
+    try {
+      const db = await client.db();
 
-    client.close();
+      await db.collection("emails").insertOne({ email });
 
-    res.json({
+      client.close();
+    } catch (e) {
+      console.log("🚀 ~ file: index.js ~ line 27 ~ handle ~ e", e);
+      res.status(500).json({
+        message: `Error: Failed to insert ${email} to collection emails`,
+      });
+      return;
+    }
+
+    res.status(201).json({
       email,
       message: "success",
     });

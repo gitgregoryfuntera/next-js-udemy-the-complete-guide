@@ -8,6 +8,8 @@ const handler = async (req, res) => {
 
   const client = await mongoDbClient("events");
 
+  const db = await client.db();
+
   if (method === "POST") {
     const {
       body: { email, name, text },
@@ -22,24 +24,24 @@ const handler = async (req, res) => {
       name,
       text,
     };
-    const db = await client.db();
 
     const result = await db.collection("comments").insertOne(newComment);
 
     res.status(201).json({
-      message: 'success',
+      message: "success",
       id: result.insertedId,
-      ...newComment
+      ...newComment,
     });
   }
 
   if (method === "GET") {
-    const dummyList = [
-      { id: "c1", name: "Greg", text: "A first comment" },
-      { id: "c2", name: "Greg", text: "A second comment" },
-    ];
+    const events = await db
+      .collection("comments")
+      .find({ eventId: eventId })
+      .sort({ _id: -1 })
+      .toArray();
 
-    res.status(200).json(dummyList);
+    res.status(200).json(events);
   }
   client.close();
 };
