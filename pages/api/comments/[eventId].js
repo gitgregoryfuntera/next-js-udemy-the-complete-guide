@@ -6,7 +6,16 @@ const handler = async (req, res) => {
     query: { eventId },
   } = req;
 
-  const client = await mongoDbClient("events");
+  let client;
+
+  try {
+    client = await mongoDbClient("events");
+  } catch (e) {
+    res.status(500).json({
+      message: `Error: Connecting to mongoDB Client, ${e.message}`,
+    });
+    return
+  }
 
   const db = await client.db();
 
@@ -25,23 +34,35 @@ const handler = async (req, res) => {
       text,
     };
 
-    const result = await db.collection("comments").insertOne(newComment);
+    try {
+      const result = await db.collection("comments").insertOne(newComment);
 
-    res.status(201).json({
-      message: "success",
-      id: result.insertedId,
-      ...newComment,
-    });
+      res.status(201).json({
+        message: "success",
+        id: result.insertedId,
+        ...newComment,
+      });
+    } catch (e) {
+      res.status(500).json({
+        message: `Error: Inserting new comment: ${e.message}`,
+      });
+    }
   }
 
   if (method === "GET") {
-    const events = await db
-      .collection("comments")
-      .find({ eventId: eventId })
-      .sort({ _id: -1 })
-      .toArray();
+    try {
+      const events = await db
+        .collection("comments")
+        .find({ eventId: eventId })
+        .sort({ _id: -1 })
+        .toArray();
 
-    res.status(200).json(events);
+      res.status(200).json(events);
+    } catch (e) {
+      res.status(500).json({
+        message: `Error: error at fetching comments ${e.message}`,
+      });
+    }
   }
   client.close();
 };
