@@ -1,8 +1,11 @@
-import { useRef } from "react";
+import { useContext, useRef } from "react";
+import NotificationContext from "../../store/notification-context";
 import classes from "./newsletter-registration.module.css";
 
 function NewsletterRegistration() {
   const emailRef = useRef();
+  const notificationCtx = useContext(NotificationContext);
+
   async function registrationHandler(event) {
     event.preventDefault();
     // fetch user input (state or refs)
@@ -13,6 +16,12 @@ function NewsletterRegistration() {
       "🚀 ~ file: newsletter-registration.js ~ line 12 ~ registrationHandler ~ value",
       value
     );
+
+    notificationCtx.showNotification({
+      title: "Registration",
+      message: "Registering new email",
+      status: "pending",
+    });
     // optional: validate input
     // send valid data to API
     try {
@@ -24,17 +33,33 @@ function NewsletterRegistration() {
         body: JSON.stringify(reqBody),
         headers: { "Content-Type": "application/json" },
       });
+      const responseStatus = await data.status;
       const response = await data.json();
+
+      if (responseStatus !== 200) {
+        throw new Error(`${response.message}`)
+      }
 
       console.log(
         "🚀 ~ file: newsletter-registration.js ~ line 20 ~ registrationHandler ~ response",
         response
       );
+
+      notificationCtx.showNotification({
+        title: "Registration",
+        message: "Registration success",
+        status: "success",
+      });
     } catch (e) {
       console.log(
         "🚀 ~ file: newsletter-registration.js ~ line 21 ~ registrationHandler ~ e",
         e
       );
+      notificationCtx.showNotification({
+        title: "Registration",
+        message: `Error: s${e.message}`,
+        status: "error",
+      });
     }
   }
 
