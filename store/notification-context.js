@@ -1,4 +1,4 @@
-const { createContext, useState } = require("react");
+const { createContext, useState, useEffect } = require("react");
 
 const NotificationContext = createContext({
   notification: null, // {title, message, status}
@@ -8,6 +8,20 @@ const NotificationContext = createContext({
 
 export const NotificationContextProvider = (props) => {
   const [notificationData, setNotificationData] = useState(null);
+
+  useEffect(() => {
+    if (
+      notificationData &&
+      (notificationData?.status === "error" ||
+        notificationData?.status === "success")
+    ) {
+      const timer = setTimeout(() => hideNotificationHandler(), 3000);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [notificationData]);
 
   const showNotificationHandler = (notificationData) => {
     setNotificationData({

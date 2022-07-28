@@ -36,8 +36,8 @@ function NewsletterRegistration() {
       const responseStatus = await data.status;
       const response = await data.json();
 
-      if (responseStatus !== 200) {
-        throw new Error(`${response.message}`)
+      if (responseStatus !== 201) {
+        throw new Error(`${response.message}`);
       }
 
       console.log(
