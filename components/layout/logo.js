@@ -1,6 +1,8 @@
+import classes from './logo.module.css';
+
 const Logo = () => {
     return (
-        <>logo works</>
+        <div className={classes.logo}>Greg's Blog</div>
     )
 
 }
