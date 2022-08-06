@@ -3,7 +3,7 @@ import PostItem from './post-item';
 const PostGrid = ({posts}) => {
     return (
         <>
-            <ul>
+            <ul className={classes.grid}>
                 {
                     posts.map(post => <PostItem/>)
                 }
