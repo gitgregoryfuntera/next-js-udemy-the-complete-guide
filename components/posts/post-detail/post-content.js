@@ -1,6 +1,6 @@
 import PostHeader from "./post-header";
 import classes from "./post-content.module.css";
-
+import ReactMarkdown from 'react-markdown';
 const DUMMY_POST = {
   title: "Getting Started NextJS",
   date: "2022-08-08",
@@ -13,7 +13,7 @@ const PostContent = () => {
   return (
     <article className={classes.content}>
       <PostHeader title={DUMMY_POST.title} image={imagePath} />
-      {DUMMY_POST.content}
+      <ReactMarkdown>{DUMMY_POST.content}</ReactMarkdown>
     </article>
   );
 };
