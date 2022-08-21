@@ -2,6 +2,8 @@ import PostHeader from "./post-header";
 import classes from "./post-content.module.css";
 import ReactMarkdown from "react-markdown";
 import Image from "next/image";
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { dracula } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 const PostContent = ({ post }) => {
   const imagePath = `/images/posts/${post.slug}/${post.image}`;
@@ -21,6 +23,16 @@ const PostContent = ({ post }) => {
         );
       }
       return <p>{children}</p>;
+    },
+    code: ({ className, children }) => {
+      const match = /language-(\w+)/.exec(className || '')
+      return (
+        <SyntaxHighlighter
+          language={match[1]}
+          children={children}
+          style={dracula}
+        />
+      );
     },
   };
 
