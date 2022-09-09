@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import classes from "./contact-form.styles.module.css";
+import Notification from "../notification/notification";
 
 const ContactForm = () => {
   const [submitBody, setSubmitBody] = useState({
@@ -7,15 +8,80 @@ const ContactForm = () => {
     name: "",
     message: "",
   });
-  const sendMessageHandler = (e) => {
-    e.preventDefault();
-    fetch("/api/contact", {
-      method: "POST",
-      body: JSON.stringify(submitBody),
-      headers: {
-        "Content-Type": "application/json",
-      },
+  const [requestStatus, setRequestStatus] = useState(null); // pending, success, error
+
+  const [notificationStatus, setNotificationStatus] = useState({
+    status: null,
+    title: null,
+    message: null,
+  });
+
+  useEffect(() => {
+    if (requestStatus === "error" || requestStatus === "success") {
+      const timer = setTimeout(() => {
+        setRequestStatus(null);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [requestStatus]);
+
+  const sendMessage = async () => {
+    setRequestStatus("pending");
+    setNotificationStatus({
+      message: `Sending message`,
+      title: "Please wait",
+      status: "pending",
     });
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        body: JSON.stringify(submitBody),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const jsonRes = await response.json();
+
+      if (jsonRes?.message === "success") {
+        // do success
+        setRequestStatus("success");
+        setNotificationStatus({
+          message: "Success",
+          title: "Success",
+          status: "success",
+        });
+        setSubmitBody({
+          email: "",
+          name: "",
+          message: "",
+        });
+      } else {
+        // do error
+        setRequestStatus("error");
+        setNotificationStatus({
+          message: "Error sending message",
+          title: "Error",
+          status: "error",
+        });
+      }
+      console.log(
+        "🚀 ~ file: contact-form.js ~ line 23 ~ sendMessage ~ jsonRes",
+        jsonRes
+      );
+    } catch (e) {
+      console.log("🚀 ~ file: contact-form.js ~ line 23 ~ sendMessage ~ e", e);
+      setRequestStatus("error");
+      setNotificationStatus({
+        message: `Error: ${e.message}`,
+        title: "Error",
+        status: "error",
+      });
+    }
+  };
+  const sendMessageHandler = async (e) => {
+    e.preventDefault();
+    await sendMessage();
   };
 
   const onChangeHandler = (e) => {
@@ -71,6 +137,13 @@ const ContactForm = () => {
           </div>
         </div>
       </form>
+      {requestStatus && (
+        <Notification
+          status={notificationStatus.status}
+          message={notificationStatus.message}
+          title={notificationStatus.title}
+        />
+      )}
     </section>
   );
 };
