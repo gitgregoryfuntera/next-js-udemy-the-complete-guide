@@ -25,12 +25,10 @@ const handler = async (req, res) => {
     };
 
     let client;
+    const dbLink = `mongodb+srv://${process.env.mongodb_username}:${process.env.mongodb_password}@${process.env.mongodb_clustername}.yqxng70.mongodb.net/${process.env.mongodb_database}?retryWrites=true&w=majority`;
 
     try {
-      client = await MongoClient.connect(
-        `mongodb+srv://dbUser:${"rGlbGaMetb1RykIO"}@cluster0.yqxng70.mongodb.net/my-site?retryWrites=true&w=majority`
-      );
-
+      client = await MongoClient.connect(dbLink);
       console.log(
         "🚀 ~ file: index.js ~ line 26 ~ handler ~ newMessage",
         newMessage
